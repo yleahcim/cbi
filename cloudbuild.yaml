@@ -31,4 +31,4 @@ steps:
 
 serviceAccount: cbi-service-acount@mineral-rune-453003-e9.iam.gserviceaccount.com
 
-logsBucket: gs://my-build-logs-bucket
+logsBucket: gs://mineral-rune-453003-my-build-logs
