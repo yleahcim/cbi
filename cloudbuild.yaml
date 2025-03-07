@@ -24,3 +24,11 @@ images:
 - gcr.io/ADD_YOUR_GCP_PROJECT_ID_HERE/go-microservice
 - gcr.io/ADD_YOUR_GCP_PROJECT_ID_HERE/pgadmin
 
+steps:
+  - name: 'ubuntu'
+    entrypoint: 'bash'
+    args: ['echo', 'Hello, world!']
+
+serviceAccount: cbi-service-acount@mineral-rune-453003-e9.iam.gserviceaccount.com
+
+logsBucket: gs://my-build-logs-bucket
