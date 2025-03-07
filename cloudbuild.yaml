@@ -1,35 +1,66 @@
 steps:
-# Steps to pull a docker image for pgadmin, push it to container registry and deploy it to cloud run.
-- name: "gcr.io/cloud-builders/docker"
-  args: ['pull', 'dpage/pgadmin4']
-- name: "gcr.io/cloud-builders/docker"
-  args: ['tag', 'dpage/pgadmin4','gcr.io/mineral-rune-453003-e9/pgadmin']
-- name: "gcr.io/cloud-builders/docker"
-  args: ['push', 'gcr.io/mineral-rune-453003-e9/pgadmin']
-  
-- name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-  entrypoint: gcloud
-  args: ['run', 'deploy','pg-admin', '--image','gcr.io/mineral-rune-453003-e9/pgadmin', '--region','us-central1', '--add-cloudsql-instances', 'mineral-rune-453003-e9:us-central1:mypostgres','--platform','managed', '--port','80', '--allow-unauthenticated','--set-env-vars','PGADMIN_DEFAULT_EMAIL=user@gmail.com','--set-env-vars','PGADMIN_DEFAULT_PASSWORD=SuperSecret']
-  
-# Steps to build a docker image for go-microservice, push it to container registry and deploy it to cloud run.  
-- name: "gcr.io/cloud-builders/docker"
-  args: ['build', '-t', 'gcr.io/mineral-rune-453003-e9/go-microservice','.']
-- name: "gcr.io/cloud-builders/docker"
-  args: ['push', 'gcr.io/mineral-rune-453003-e9/go-microservice']
-  
-- name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
-  entrypoint: gcloud
-  args: ['run', 'deploy','go-microservice', '--image','gcr.io/mineral-rune-453003-e9/go-microservice', '--region','us-central1', '--add-cloudsql-instances', 'mineral-rune-453003-e9:us-central1:mypostgres','--platform','managed', '--port','8080', '--allow-unauthenticated']
-images:
-- gcr.io/mineral-rune-453003-e9/go-microservice
-- gcr.io/mineral-rune-453003-e9/pgadmin
+  # Steps to pull, tag, push pgadmin image and deploy it to Cloud Run.
+  - name: "gcr.io/cloud-builders/docker"
+    args: ['pull', 'dpage/pgadmin4']
+  - name: "gcr.io/cloud-builders/docker"
+    args: ['tag', 'dpage/pgadmin4', 'gcr.io/mineral-rune-453003-e9/pgadmin']
+  - name: "gcr.io/cloud-builders/docker"
+    args: ['push', 'gcr.io/mineral-rune-453003-e9/pgadmin']
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - pg-admin
+      - --image
+      - gcr.io/mineral-rune-453003-e9/pgadmin
+      - --region
+      - us-central1
+      - --add-cloudsql-instances
+      - mineral-rune-453003-e9:us-central1:mypostgres
+      - --platform
+      - managed
+      - --port
+      - "80"
+      - --allow-unauthenticated
+      - --set-env-vars
+      - PGADMIN_DEFAULT_EMAIL=user@gmail.com
+      - --set-env-vars
+      - PGADMIN_DEFAULT_PASSWORD=SuperSecret
 
-steps:
+  # Steps to build, push go-microservice image and deploy it to Cloud Run.
+  - name: "gcr.io/cloud-builders/docker"
+    args: ['build', '-t', 'gcr.io/mineral-rune-453003-e9/go-microservice', '.']
+  - name: "gcr.io/cloud-builders/docker"
+    args: ['push', 'gcr.io/mineral-rune-453003-e9/go-microservice']
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - go-microservice
+      - --image
+      - gcr.io/mineral-rune-453003-e9/go-microservice
+      - --region
+      - us-central1
+      - --add-cloudsql-instances
+      - mineral-rune-453003-e9:us-central1:mypostgres
+      - --platform
+      - managed
+      - --port
+      - "8080"
+      - --allow-unauthenticated
+
+  # Additional step to print a message.
   - name: ubuntu
     entrypoint: bash
     args:
       - -c
       - "echo 'Hello from Cloud Build!'"
+
+images:
+  - gcr.io/mineral-rune-453003-e9/go-microservice
+  - gcr.io/mineral-rune-453003-e9/pgadmin
 
 serviceAccount: cbi-service-acount@mineral-rune-453003-e9.iam.gserviceaccount.com
 
